@@ -1,0 +1,203 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #0a0a0a;
+    color: #d4af37;
+    font-family: 'Crimson Text', serif;
+    min-height: 100vh;
+    background-image: 
+        linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+        url('https://images.unsplash.com/photo-1534447677768-be436bb09401?w=1600');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.container {
+    min-height: 100vh;
+    min-height: -webkit-fill-available; /* For iOS Safari */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+.content {
+    text-align: center;
+    position: relative;
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 3rem;
+    border-radius: 10px;
+    border: 2px solid #d4af37;
+    max-width: 600px;
+    width: 100%;
+    margin: 1rem;
+}
+
+h1 {
+    font-family: 'Pirata One', cursive;
+    font-size: clamp(2.5rem, 8vw, 4rem);
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+    line-height: 1.2;
+}
+
+h2 {
+    font-size: clamp(1.2rem, 4vw, 1.5rem);
+    margin-bottom: 2rem;
+    color: #fff;
+}
+
+.coming-soon {
+    margin: 2rem 0;
+}
+
+.coming-soon p {
+    font-size: clamp(1.5rem, 5vw, 2rem);
+    margin-bottom: 1rem;
+}
+
+.creator {
+    font-size: clamp(1rem, 3vw, 1.2rem);
+    color: #fff;
+    margin-bottom: 2rem;
+}
+
+.newsletter {
+    margin: 2rem 0;
+}
+
+.newsletter p {
+    margin-bottom: 1rem;
+    color: #fff;
+    font-size: clamp(1rem, 3vw, 1.1rem);
+}
+
+form {
+    display: flex;
+    gap: 1rem;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+input[type="email"] {
+    flex: 1;
+    padding: 0.8rem;
+    border: none;
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border: 1px solid #d4af37;
+    font-size: 16px; /* Prevents iOS zoom on focus */
+    -webkit-appearance: none; /* Removes iOS default styles */
+    appearance: none;
+}
+
+button {
+    padding: 0.8rem 1.5rem;
+    background-color: #d4af37;
+    color: #000;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Crimson Text', serif;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    font-size: 16px;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+button:hover {
+    background-color: #c19b2f;
+    transform: translateY(-2px);
+}
+
+@media (hover: hover) {
+    button:hover {
+        background-color: #c19b2f;
+        transform: translateY(-2px);
+    }
+}
+
+.form-message {
+    margin-top: 1rem;
+    padding: 0.5rem;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.form-message.success {
+    background-color: rgba(0, 255, 0, 0.1);
+    color: #4caf50;
+    border: 1px solid #4caf50;
+}
+
+.form-message.error {
+    background-color: rgba(255, 0, 0, 0.1);
+    color: #f44336;
+    border: 1px solid #f44336;
+}
+
+/* Tablet Styles */
+@media (max-width: 1024px) {
+    .content {
+        padding: 2.5rem;
+    }
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+    
+    .content {
+        padding: 2rem 1.5rem;
+    }
+    
+    form {
+        flex-direction: column;
+    }
+    
+    input[type="email"],
+    button {
+        width: 100%;
+    }
+}
+
+/* Small Mobile Styles */
+@media (max-width: 380px) {
+    .content {
+        padding: 1.5rem 1rem;
+    }
+}
+
+/* Fix for iOS Safari height issue */
+@supports (-webkit-touch-callout: none) {
+    .container {
+        min-height: -webkit-fill-available;
+    }
+}
+
+.skull-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Pirate_Flag.svg/1200px-Pirate_Flag.svg.png');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.1;
+    pointer-events: none;
+} 
