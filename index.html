@@ -32,14 +32,14 @@
     </div>
 
     <script>
-        const API_URL = 'http://107.189.18.27:3001';
+        const API_URL = 'http://3mp0r104rm4n1.com:3001';
         const serverStatus = document.getElementById('server-status');
         let isServerConnected = false;
 
         // Test server connection on page load
         async function testServerConnection() {
             try {
-                console.log('Testing connection to VPS:', API_URL);
+                console.log('Testing connection to:', API_URL);
                 const response = await fetch(`${API_URL}/api/test`, {
                     method: 'GET',
                     headers: {
@@ -47,14 +47,14 @@
                     }
                 });
                 const data = await response.json();
-                console.log('VPS server status:', data.status);
+                console.log('Server status:', data.status);
                 isServerConnected = true;
                 serverStatus.textContent = '🟢 Server Connected';
                 serverStatus.className = 'server-status connected';
                 return true;
             } catch (error) {
-                console.error('VPS connection test failed:', error);
-                console.log('Make sure the server is running on the VPS and port 3001 is open');
+                console.error('Server connection test failed:', error);
+                console.log('Make sure the server is running and domain is configured correctly');
                 isServerConnected = false;
                 serverStatus.textContent = '🔴 Server Disconnected';
                 serverStatus.className = 'server-status disconnected';
@@ -131,10 +131,8 @@
                 }
             } catch (error) {
                 console.error('Submission error:', error);
-                messageDiv.textContent = '⚠️ Unable to join waitlist. Please check if the server is running.';
+                messageDiv.textContent = '⚠️ Unable to join waitlist. Please try again later.';
                 messageDiv.className = 'form-message error';
-                isServerConnected = false;
-                await testServerConnection();
             } finally {
                 // Re-enable form
                 emailInput.disabled = false;

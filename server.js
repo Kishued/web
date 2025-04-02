@@ -6,8 +6,9 @@ const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
-const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'blacksails2024';
+const DOMAIN = '3mp0r104rm4n1.com';
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'whoami';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'zoxxeg-feksyn-8popDe';
 
 // Middleware
 app.use(cors({
@@ -68,7 +69,10 @@ if (!fs.existsSync(emailsFile)) {
 // Test endpoint
 app.get('/api/test', (req, res) => {
     console.log('Test endpoint called');
-    res.json({ status: 'Server is running', timestamp: new Date().toISOString() });
+    res.json({ 
+        status: 'Server is running',
+        timestamp: new Date().toISOString()
+    });
 });
 
 // API endpoint to handle email submissions
@@ -191,7 +195,7 @@ app.listen(PORT, '0.0.0.0', () => {
     console.log('=================================');
     console.log(`Server started at: ${new Date().toISOString()}`);
     console.log(`Server running on http://0.0.0.0:${PORT}`);
-    console.log(`Server is accessible at http://107.189.18.27:${PORT}`);
+    console.log(`Server is accessible at http://${DOMAIN}:${PORT}`);
     console.log('Email storage location:', emailsFile);
     console.log('CORS enabled for all origins');
     console.log('=================================');
