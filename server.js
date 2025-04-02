@@ -16,7 +16,6 @@ app.use(express.static('./'));
 
 // Basic auth middleware
 const basicAuth = (req, res, next) => {
-    // Get auth header
     const authHeader = req.headers.authorization;
 
     if (!authHeader) {
@@ -24,12 +23,10 @@ const basicAuth = (req, res, next) => {
         return res.status(401).json({ error: 'Authentication required' });
     }
 
-    // Parse auth header
     const auth = Buffer.from(authHeader.split(' ')[1], 'base64').toString().split(':');
     const username = auth[0];
     const password = auth[1];
 
-    // Check credentials
     if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
         next();
     } else {
@@ -41,15 +38,68 @@ const basicAuth = (req, res, next) => {
 // Create emails.json if it doesn't exist
 const emailsFile = path.join(__dirname, 'emails.json');
 if (!fs.existsSync(emailsFile)) {
-    fs.writeFileSync(emailsFile, JSON.stringify({ emails: [] }));
+    fs.writeFileSync(emailsFile, JSON.stringify({ emails: [] }, null, 2));
+    console.log('Created new emails.json file');
 }
+
+// Test endpoint
+app.get('/api/test', (req, res) => {
+    res.json({ status: 'Server is running' });
+});
+
+// API endpoint to handle email submissions
+app.post('/api/subscribe', (req, res) => {
+    console.log('Received subscription request:', req.body);
+    
+    const { email } = req.body;
+    
+    if (!email) {
+        console.log('Error: No email provided');
+        return res.status(400).json({ error: 'Email is required' });
+    }
+
+    try {
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            console.log('Error: Invalid email format:', email);
+            return res.status(400).json({ error: 'Invalid email format' });
+        }
+
+        // Read current emails
+        let data;
+        try {
+            const fileContent = fs.readFileSync(emailsFile, 'utf8');
+            data = JSON.parse(fileContent);
+            console.log('Current emails count:', data.emails.length);
+        } catch (readError) {
+            console.error('Error reading emails file:', readError);
+            data = { emails: [] };
+        }
+
+        // Check if email already exists
+        if (data.emails.includes(email)) {
+            console.log('Email already exists:', email);
+            return res.status(400).json({ error: 'Email already subscribed' });
+        }
+
+        // Add new email
+        data.emails.push(email);
+        fs.writeFileSync(emailsFile, JSON.stringify(data, null, 2));
+        console.log('Successfully added new email:', email);
+
+        res.json({ message: 'Successfully subscribed!' });
+    } catch (error) {
+        console.error('Server error:', error);
+        res.status(500).json({ error: 'Server error', details: error.message });
+    }
+});
 
 // Admin endpoint to view emails
 app.get('/admin/emails', basicAuth, (req, res) => {
     try {
         const data = JSON.parse(fs.readFileSync(emailsFile));
         
-        // Format the response as HTML for better viewing
         const html = `
             <!DOCTYPE html>
             <html>
@@ -113,33 +163,7 @@ app.get('/admin/emails', basicAuth, (req, res) => {
     }
 });
 
-// API endpoint to handle email submissions
-app.post('/api/subscribe', (req, res) => {
-    const { email } = req.body;
-    
-    if (!email) {
-        return res.status(400).json({ error: 'Email is required' });
-    }
-
-    try {
-        const data = JSON.parse(fs.readFileSync(emailsFile));
-        
-        // Check if email already exists
-        if (data.emails.includes(email)) {
-            return res.status(400).json({ error: 'Email already subscribed' });
-        }
-
-        // Add new email
-        data.emails.push(email);
-        fs.writeFileSync(emailsFile, JSON.stringify(data, null, 2));
-
-        res.json({ message: 'Successfully subscribed!' });
-    } catch (error) {
-        console.error('Error:', error);
-        res.status(500).json({ error: 'Server error' });
-    }
-});
-
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
+    console.log('Email storage location:', emailsFile);
 }); 

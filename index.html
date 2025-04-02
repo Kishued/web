@@ -31,19 +31,49 @@
     </div>
 
     <script>
+        // Test server connection on page load
+        async function testServerConnection() {
+            try {
+                const response = await fetch('http://localhost:3000/api/test');
+                const data = await response.json();
+                console.log('Server status:', data.status);
+                return true;
+            } catch (error) {
+                console.error('Server connection test failed:', error);
+                return false;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', testServerConnection);
+
         document.getElementById('waitlist-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const email = e.target.querySelector('input[type="email"]').value;
+            const form = e.target;
+            const emailInput = form.querySelector('input[type="email"]');
+            const email = emailInput.value.trim();
             const messageDiv = document.getElementById('form-message');
-            const submitButton = e.target.querySelector('button');
+            const submitButton = form.querySelector('button');
             
-            // Disable button and show loading state
+            // Clear previous messages
+            messageDiv.textContent = '';
+            messageDiv.className = 'form-message';
+            
+            // Basic email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                messageDiv.textContent = '⚠️ Please enter a valid email address';
+                messageDiv.className = 'form-message error';
+                return;
+            }
+            
+            // Disable form while submitting
+            emailInput.disabled = true;
             submitButton.disabled = true;
             submitButton.textContent = 'Joining...';
-            messageDiv.textContent = '';
             
             try {
+                console.log('Submitting email:', email);
                 const response = await fetch('http://localhost:3000/api/subscribe', {
                     method: 'POST',
                     headers: {
@@ -53,23 +83,26 @@
                 });
                 
                 const data = await response.json();
+                console.log('Server response:', data);
                 
                 if (response.ok) {
                     messageDiv.textContent = '🏴‍☠️ Welcome aboard! You\'re now part of the crew!';
                     messageDiv.className = 'form-message success';
-                    e.target.reset();
+                    form.reset();
                 } else {
                     messageDiv.textContent = `⚠️ ${data.error || 'Something went wrong'}`;
                     messageDiv.className = 'form-message error';
                 }
             } catch (error) {
-                messageDiv.textContent = '⚠️ Unable to join waitlist. Please try again later.';
+                console.error('Submission error:', error);
+                messageDiv.textContent = '⚠️ Unable to join waitlist. Please check if the server is running.';
                 messageDiv.className = 'form-message error';
+            } finally {
+                // Re-enable form
+                emailInput.disabled = false;
+                submitButton.disabled = false;
+                submitButton.textContent = 'Join Waitlist';
             }
-            
-            // Reset button state
-            submitButton.disabled = false;
-            submitButton.textContent = 'Join Waitlist';
         });
     </script>
 </body>
