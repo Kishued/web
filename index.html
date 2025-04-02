@@ -26,28 +26,63 @@
                     <button type="submit">Join Waitlist</button>
                 </form>
                 <div id="form-message" class="form-message"></div>
+                <div id="server-status" class="server-status"></div>
             </div>
         </div>
     </div>
 
     <script>
+        const API_URL = 'http://localhost:3001';
+        const serverStatus = document.getElementById('server-status');
+        let isServerConnected = false;
+
         // Test server connection on page load
         async function testServerConnection() {
             try {
-                const response = await fetch('http://localhost:3000/api/test');
+                console.log('Testing connection to:', API_URL);
+                const response = await fetch(`${API_URL}/api/test`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
                 const data = await response.json();
                 console.log('Server status:', data.status);
+                isServerConnected = true;
+                serverStatus.textContent = '🟢 Server Connected';
+                serverStatus.className = 'server-status connected';
                 return true;
             } catch (error) {
                 console.error('Server connection test failed:', error);
+                console.log('Make sure the server is running with: node server.js');
+                isServerConnected = false;
+                serverStatus.textContent = '🔴 Server Disconnected';
+                serverStatus.className = 'server-status disconnected';
                 return false;
             }
         }
 
-        document.addEventListener('DOMContentLoaded', testServerConnection);
+        // Test connection every 5 seconds
+        const connectionInterval = setInterval(testServerConnection, 5000);
+        
+        // Initial connection test
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Page loaded, testing server connection...');
+            testServerConnection();
+        });
+
+        // Clean up interval when page is closed
+        window.addEventListener('beforeunload', () => {
+            clearInterval(connectionInterval);
+        });
 
         document.getElementById('waitlist-form').addEventListener('submit', async (e) => {
             e.preventDefault();
+            
+            if (!isServerConnected) {
+                alert('Server is not connected. Please try again later.');
+                return;
+            }
             
             const form = e.target;
             const emailInput = form.querySelector('input[type="email"]');
@@ -74,10 +109,11 @@
             
             try {
                 console.log('Submitting email:', email);
-                const response = await fetch('http://localhost:3000/api/subscribe', {
+                const response = await fetch(`${API_URL}/api/subscribe`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Accept': 'application/json'
                     },
                     body: JSON.stringify({ email }),
                 });
@@ -97,6 +133,8 @@
                 console.error('Submission error:', error);
                 messageDiv.textContent = '⚠️ Unable to join waitlist. Please check if the server is running.';
                 messageDiv.className = 'form-message error';
+                isServerConnected = false;
+                await testServerConnection();
             } finally {
                 // Re-enable form
                 emailInput.disabled = false;

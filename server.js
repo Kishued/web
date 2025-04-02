@@ -5,14 +5,18 @@ const fs = require('fs');
 const path = require('path');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'blacksails2024';
 
 // Middleware
-app.use(cors());
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type']
+}));
 app.use(bodyParser.json());
-app.use(express.static('./'));
+app.use(express.static(path.join(__dirname, './')));
 
 // Basic auth middleware
 const basicAuth = (req, res, next) => {
