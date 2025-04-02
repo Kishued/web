@@ -118,4 +118,9 @@ sudo netstat -tulpn | grep 3001
 4. **Restart server**:
 ```bash
 pm2 restart blacksails
+```
+
+5. **Check firewall status**:
+```bash
+sudo ufw status
 ``` 
