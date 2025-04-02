@@ -13,8 +13,17 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'blacksails2024';
 app.use(cors({
     origin: '*',
     methods: ['GET', 'POST'],
-    allowedHeaders: ['Content-Type']
+    allowedHeaders: ['Content-Type', 'Accept']
 }));
+
+// Security headers
+app.use((req, res, next) => {
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('X-XSS-Protection', '1; mode=block');
+    next();
+});
+
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, './')));
 
@@ -167,7 +176,8 @@ app.get('/admin/emails', basicAuth, (req, res) => {
     }
 });
 
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server running on http://0.0.0.0:${PORT}`);
+    console.log('Server is accessible at http://172.86.66.8:${PORT}');
     console.log('Email storage location:', emailsFile);
 }); 
