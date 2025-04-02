@@ -29,7 +29,7 @@ sudo apt-get install nginx
 
 1. Clone the project to your VPS:
 ```bash
-git clone <your-repository-url>
+git clone https://github.com/Kishued/web
 cd black-sails-society
 ```
 
@@ -42,8 +42,8 @@ npm install
 ```bash
 # Create .env file
 echo "PORT=3000
-ADMIN_USERNAME=your_admin_username
-ADMIN_PASSWORD=your_secure_password" > .env
+ADMIN_USERNAME=whoami
+ADMIN_PASSWORD=zoxxeg-feksyn-8popDe" > .env
 ```
 
 4. Start the application with PM2:
@@ -63,7 +63,7 @@ sudo nano /etc/nginx/sites-available/black-sails
 ```nginx
 server {
     listen 80;
-    server_name your-domain.com;  # Replace with your domain
+    server_name 3mp0r104rm4n1.com;  # Replace with your domain
 
     location / {
         proxy_pass http://localhost:3000;
@@ -99,7 +99,7 @@ sudo certbot --nginx -d your-domain.com
 
 1. Once deployed, you can access the email list at:
 ```
-https://your-domain.com/admin/emails
+https://3mp0r104rm4n1.com/admin/emails
 ```
 
 2. Use your admin credentials when prompted:
